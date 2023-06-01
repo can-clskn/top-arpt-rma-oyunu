@@ -1,0 +1,237 @@
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace topoyunudeneme
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+            // Topun ilk konumunu belirler.
+            pictureBox1.Left = 150;
+            pictureBox1.Top = 100;
+            panel5.Controls.Remove(panel6);
+            this.Controls.Add(panel6);
+            this.panel6.BringToFront();
+            panel6.Left = 320;
+            panel6.Top = 150;
+            button1.Enabled = false; // buton1' i aktif etme
+            // Form1 yüklendiğinde zamanlayıcıyı aktif eder.
+            timer1.Enabled = true;
+            Console.WriteLine(panel6.Right);
+            
+        }
+
+        int xyon = 1, yyon = 1, carpma_adeti = 0;
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // butona basıldığında yeni oyun için yapılacak işlemler
+            label1.Visible = false;
+            label2.Visible = false;
+            xyon = yyon = 1;
+            carpma_adeti = 0;
+            pictureBox1.Left = 150;
+            pictureBox1.Top = 100;
+            button1.Enabled = false;
+            pictureBox1.Visible = true;
+            timer1.Enabled = true;
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Sağ ok tuşuna basıldığında panel1 ve panel2 sağa hareket eder.
+            if (e.KeyCode == Keys.Right)
+            {
+             
+                // Panel1 ve Panel2 'nin sağdan boşluğu < 500 olana kadar sağa ilerleyebilir.
+                if (panel1.Right < 500)
+                {
+                    panel1.Left += 5;
+                    panel2.Left += 5;
+                }
+               
+            }
+            // Sol ok tuşuna basıldığında panel1 ve panel2 sola hareket eder.
+            if (e.KeyCode == Keys.Left)
+            {
+                // Panel1 ve Panel2 'nin soldan boşluğu > 120 olana kadar sola ilerleyebilir.
+                if (panel1.Left > 120)
+                {
+                    panel1.Left -= 5;
+                    panel2.Left -= 5;
+                }
+
+            }
+            // Yukarı ok tuşuna basıldığına panel3 ve panel 4 yukarı hareket eder.
+            if (e.KeyCode == Keys.Up)
+            {
+                // Panel3 ve Panel4 'nin yukarıdan boşluğu > 70 olana kadar yukarı ilerleyebilir.
+                if (panel3.Top > 70)
+                {
+                    panel3.Top -= 5;
+                    panel4.Top -= 5;
+                }
+
+            }
+            // Aşağı ok tuşuna basıldığına panel3 ve panel 4 aşağı hareket eder.
+            if (e.KeyCode == Keys.Down)
+            {
+                // Panel3 ve Panel4 'ün aşağıdan boşluğu < 300 olana kadar aşağı ilerleyebilir.
+                if (panel3.Bottom < 300)
+                {
+                    panel3.Top += 5;
+                    panel4.Top += 5;
+                }
+
+            }
+
+        }
+
+        // zamanlama çalıştığında 
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            // Topun hareketi için yön vektörü ile toplanır.
+            pictureBox1.Left += xyon;
+            pictureBox1.Top += yyon;
+            // -------------------------------
+            // engel kodlarının başlangıcı
+            if (pictureBox1.Right == panel6.Left)
+            {
+                //Top panel3' ün sol kısmına çarptığında
+                if (panel6.Top < pictureBox1.Top + pictureBox1.Height / 2 && panel6.Bottom > pictureBox1.Top + pictureBox1.Height / 2)
+                {
+                    // x yonunu sol olarak değiştirir.
+                    xyon = -1 * xyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+            }
+            if (pictureBox1.Left == panel6.Right)
+            {
+                if(panel6.Top < pictureBox1.Top + pictureBox1.Height / 2 && panel6.Bottom > pictureBox1.Top + pictureBox1.Height / 2)
+                {
+                    // y yönünün yukarı olarak değiştirir.
+                    xyon = -1 * xyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+            }
+            if (pictureBox1.Bottom == panel6.Top)
+            {
+                if (panel6.Left < pictureBox1.Left + pictureBox1.Width / 2 && panel6.Right > pictureBox1.Left + pictureBox1.Width / 2)
+                {
+                    // y yönünün yukarı olarak değiştirir.
+                    yyon = -1 * yyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+            }
+            if (pictureBox1.Top == panel6.Bottom)
+            {
+                //Top panel1' nin alt kısmına çarptığında
+                if (panel6.Left < pictureBox1.Left + pictureBox1.Width / 2 && panel6.Right > pictureBox1.Left + pictureBox1.Width / 2)
+                {
+                    // y yonunu aşağı olarak değiştirir.
+                    yyon = -1 * yyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+            }
+            // -------------------------------
+            // engel kodlarının bitimi
+                // Eğer topun aşağıdan boşluğu 300' e eşit ise. 
+                if (pictureBox1.Bottom == 300)
+            {
+                //Top panel2' nin üst kısmına çarptığında
+                if (panel2.Left < pictureBox1.Left + pictureBox1.Width / 2 && panel2.Right > pictureBox1.Left + pictureBox1.Width / 2)
+                {
+                    // y yönünün yukarı olarak değiştirir.
+                    yyon = -1 * yyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+                else
+                {
+                    // Eğer panele çarmamışsa (gol durumunda) zamanlayıcıyı durdur.
+                    timer1.Enabled = false;
+                }
+            }
+            // Eğer topun sağdan boşluğu 500' e eşit ise. 
+            if (pictureBox1.Right == 500)
+            {
+                //Top panel3' ün sol kısmına çarptığında
+                if (panel3.Top < pictureBox1.Top + pictureBox1.Height / 2 && panel3.Bottom > pictureBox1.Top + pictureBox1.Height / 2)
+                {
+                    // x yonunu sol olarak değiştirir.
+                    xyon = -1 * xyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+                else
+                {
+                    // Eğer panele çarmamışsa (gol durumunda) zamanlayıcıyı durdur.
+                    timer1.Enabled = false;
+                }
+            }
+            // Eğer topun yukarıdan boşluğu 70' e eşit ise. 
+            if (pictureBox1.Top == 70)
+            {
+                //Top panel1' nin alt kısmına çarptığında
+                if (panel1.Left < pictureBox1.Left + pictureBox1.Width / 2 && panel1.Right > pictureBox1.Left + pictureBox1.Width / 2)
+                {
+                    // y yonunu aşağı olarak değiştirir.
+                    yyon = -1 * yyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+                else
+                {
+                    // Eğer panele çarmamışsa (gol durumunda) zamanlayıcıyı durdur.
+                    timer1.Enabled = false;
+                }
+            }
+            // Eğer topun soldan boşluğu 120' ye eşit ise.
+            if (pictureBox1.Left == 120)
+            {
+                //Top panel4' ün sağ kısmına çarptığında
+                if (panel4.Top < pictureBox1.Top + pictureBox1.Height / 2 && panel4.Bottom > pictureBox1.Top + pictureBox1.Height / 2)
+                {
+                    // x yonunu sağ olarak değiştirir.
+                    xyon = -1 * xyon;
+                    // carpma adet sayısını 1 artırır.
+                    carpma_adeti += 1;
+                }
+                else
+                {
+                    // Eğer panele çarmamışsa (gol durumunda) zamanlayıcıyı durdur.
+                    timer1.Enabled = false;
+                }
+            }
+            // Eğer zamanlayıcı durmuş ise (gol durumunda) yapılacak olan işlemleri çalıştırır.
+            if (timer1.Enabled == false)
+            {
+                button1.Enabled = true; // buton1' i aktif et
+                pictureBox1.Visible = false; // topun görünümünü false yapar.
+                label1.Text = "ÜZGÜNÜM\nKAYBETTİN"; // ekranda ki label' ın mesajını değiştirir.
+                label1.Left = (this.Width - label1.Width) / 2; //ekranda ki label' ın x'e göre konumunu değiştirir.
+                label1.Top = ((this.Height - label1.Height) / 2) - 25; //ekranda ki label' ın y'ye göre konumunu değiştirir.
+                label2.Text = "Carpma adeti : " + carpma_adeti.ToString(); // label2 ' nin mesajını değiştirir.
+                label2.Left = label1.Left + 75; //ekranda ki label' ın x'e göre konumunu değiştirir.
+                label2.Top = label1.Top + 190; //ekranda ki label' ın y'ye göre konumunu değiştirir.
+                label1.Visible = true; // label1' i görünür yapar.
+                label2.Visible = true;  // label2' yi görünür yapar.
+                panel6.Visible = false; // engeli ekrandan kaldırır.
+            }
+        }
+       
+    }
+}
